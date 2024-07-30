@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../constants/colors.dart';
 import '../themes/theme_provider.dart';
 import '../widgets/todo_item.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../model/todo_database.dart';
 import 'package:intl/intl.dart';
 
@@ -51,7 +52,7 @@ class _HomeState extends State<Home> {
               },
             ),
             TextButton(
-              child: Text(
+              child: const Text(
                 'Clear',
                 style: TextStyle(color: Colors.redAccent),
               ),
@@ -71,6 +72,7 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     final todoDatabase = Provider.of<ToDoDatabase>(context);
     final groupedTodos = todoDatabase.groupedTodos;
+    final hasTodos = groupedTodos.values.any((list) => list.isNotEmpty);
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
@@ -87,55 +89,71 @@ class _HomeState extends State<Home> {
               child: searchBox(),
             ),
             Expanded(
-              child: ListView(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 0,
-                  vertical: 15,
-                ),
-                children: groupedTodos.keys.map((key) {
-                  final todosForKey = groupedTodos[key]!;
-                  final itemCount = todosForKey.length;
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 15),
-                    child: ExpansionTile(
-                      iconColor: Theme.of(context).colorScheme.inversePrimary,
-                      backgroundColor: Theme.of(context).colorScheme.primary,
-                      title: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            '$key ($itemCount)',
-                            style: TextStyle(
-                              color:
-                                  Theme.of(context).colorScheme.inversePrimary,
+              child: hasTodos
+                  ? ListView(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 0,
+                        vertical: 15,
+                      ),
+                      children: groupedTodos.keys
+                          .where((key) => groupedTodos[key]!.isNotEmpty)
+                          .map((key) {
+                        final todosForKey = groupedTodos[key]!;
+                        final itemCount = todosForKey.length;
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 15),
+                          child: ExpansionTile(
+                            iconColor:
+                                Theme.of(context).colorScheme.inversePrimary,
+                            backgroundColor:
+                                Theme.of(context).colorScheme.primary,
+                            title: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  '$key ($itemCount)',
+                                  style: TextStyle(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .inversePrimary,
+                                  ),
+                                ),
+                                if (key == 'Completed')
+                                  IconButton(
+                                    icon: const Icon(Icons.delete),
+                                    color: Colors.redAccent,
+                                    onPressed: () =>
+                                        _clearCompletedTodos(context),
+                                  ),
+                              ],
                             ),
+                            shape: const RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10.0)),
+                            ),
+                            children: groupedTodos[key]!.map((todo) {
+                              return ToDoItem(
+                                todo: todo,
+                                onDeleteItem: (id) =>
+                                    todoDatabase.deleteTodoById(id),
+                                onToDoChange: (todo) =>
+                                    todoDatabase.updateTodoStatus(todo),
+                              );
+                            }).toList(),
                           ),
-                          if (key == 'Completed')
-                            IconButton(
-                              icon: const Icon(Icons.delete),
-                              color: Colors.redAccent,
-                              onPressed: () => _clearCompletedTodos(context),
-                            ),
-                        ],
-                      ),
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                      ),
-                      children: groupedTodos[key]!.map((todo) {
-                        return ToDoItem(
-                          todo: todo,
-                          onDeleteItem: (id) => todoDatabase.deleteTodoById(id),
-                          onToDoChange: (todo) =>
-                              todoDatabase.updateTodoStatus(todo),
                         );
                       }).toList(),
-                    ),
-                  );
-                }).toList(),
-              ),
+                    )
+                  : Center(
+                      child: Text(
+                      "Add ToDos With the '+' button",
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.inversePrimary,
+                          fontSize: 20),
+                    )),
             ),
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(4.0),
               child: Text(
                 'Made with ❤️ by imvbh',
                 style: TextStyle(
@@ -275,12 +293,11 @@ class _HomeState extends State<Home> {
         horizontal: 15,
       ),
       decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.primary,
-          borderRadius: BorderRadius.circular(50),
-          boxShadow: const [
-            BoxShadow(
-                color: Colors.black, blurRadius: 1.0, offset: Offset(1, 1)),
-          ]),
+        color: Theme.of(context).colorScheme.primary,
+        border: Border.all(
+            color: Theme.of(context).colorScheme.inversePrimary, width: 1.0),
+        borderRadius: BorderRadius.circular(50),
+      ),
       child: TextField(
         cursorColor: Theme.of(context).colorScheme.inversePrimary,
         onChanged: (value) {
@@ -314,14 +331,12 @@ class _HomeState extends State<Home> {
         children: [
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Text(
-              "ToDo-it",
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.inversePrimary,
-                fontSize: 40,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+            child: Text("ToDo-it",
+                style: GoogleFonts.rubik(
+                  fontSize: 48,
+                  color: Theme.of(context).colorScheme.inversePrimary,
+                  fontWeight: FontWeight.bold,
+                )),
           ),
           IconButton(
             onPressed: () {
@@ -331,8 +346,8 @@ class _HomeState extends State<Home> {
               Provider.of<ThemeProvider>(context, listen: false).toggleTheme();
             },
             icon: isPressed
-                ? const Icon(Icons.light_mode)
-                : const Icon(Icons.dark_mode),
+                ? const Icon(Icons.dark_mode)
+                : const Icon(Icons.light_mode),
             color: Theme.of(context).colorScheme.inversePrimary,
             iconSize: 30,
           ),

@@ -3,7 +3,7 @@ import 'package:todo_basic_1/themes/theme.dart';
 
 class ThemeProvider with ChangeNotifier {
 // initially, theme is light mode
-  ThemeData _themeData = lightMode;
+  ThemeData _themeData = darkMode;
 
   ThemeData get themeData => _themeData;
 
