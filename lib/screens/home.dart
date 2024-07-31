@@ -146,7 +146,7 @@ class _HomeState extends State<Home> {
                     )
                   : Center(
                       child: Text(
-                      "Add ToDos With the '+' button",
+                      "Add ToDos with the '+' button",
                       style: TextStyle(
                           color: Theme.of(context).colorScheme.inversePrimary,
                           fontSize: 20),
@@ -177,6 +177,7 @@ class _HomeState extends State<Home> {
   }
 
   void _showAddTodoBottomSheet() {
+    _todoController.clear();
     DateTime? selectedDate;
     showModalBottomSheet(
       shape: const RoundedRectangleBorder(
@@ -270,6 +271,7 @@ class _HomeState extends State<Home> {
                         selectedDate,
                       );
                       Navigator.of(context).pop();
+                      _todoController.clear();
                     },
                     child: Text(
                       'Add',
