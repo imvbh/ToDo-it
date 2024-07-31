@@ -13,9 +13,9 @@ ToDo-it is a simple and intuitive To-Do List application built with Flutter. Thi
 
 ## Screenshots
 
-<img scr="screenshots/UI_dark_mode.jpg" alt="To-Do List(Dark Mode)" width ="300"/>
-<img scr="screenshots/AddNew.jpg" alt="Add Task" width ="300"/>
-<img scr="screenshots/UI_lightMode.jpg" alt="Light Mode UI" width ="300"/>
+<img src="screenshots/UI_dark_mode.jpg" alt="To-Do List(Dark Mode)" width ="300"/>
+<img src="screenshots/AddNew.jpg" alt="Add Task" width ="300"/>
+<img src="screenshots/UI_lightMode.jpg" alt="Light Mode UI" width ="300"/>
 
 ## Installation
 
