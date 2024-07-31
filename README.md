@@ -21,12 +21,12 @@ ToDo-it is a simple and intuitive To-Do List application built with Flutter. Thi
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/todo-it.git
+   git clone https://github.com/imvbh/ToDo-it.git
 2. Navigate to the project directory:
 
     ```bash
 
-    cd todo-it
+    cd ToDo-it
 
 3. Install dependencies:
 
